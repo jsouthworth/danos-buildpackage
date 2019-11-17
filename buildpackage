@@ -19,6 +19,7 @@ EOF
 
 function import_source() {
     cp -r /mnt/src/* /build/src
+    chown -R builduser:builduser /build/
 }
 
 function install_build_dependencies() {
@@ -29,7 +30,7 @@ function install_build_dependencies() {
 }
 
 function build_package() {
-    debuild -uc -us -i -b
+    su builduser -c "debuild -uc -us -i -b"
 }
 
 function export_package() {

@@ -94,6 +94,7 @@ func (b *Builder) srcDirIsDebian() bool {
 	_, err := os.Stat(b.srcDir + "/debian/control")
 	return !os.IsNotExist(err)
 }
+
 func (b *Builder) canonicalImageName() string {
 	return "registry.hub.docker.com/" + b.imageName()
 }
@@ -103,7 +104,7 @@ func (b *Builder) imageName() string {
 }
 
 func (b *Builder) pullEnvironment() error {
-	log.Println("pulling environment", b.imageName())
+	log.Println("pulling environment", b.canonicalImageName())
 	r, err := b.cli.ImagePull(
 		b.ctx,
 		b.canonicalImageName(),
@@ -125,11 +126,11 @@ func (b *Builder) getBindMounts() []string {
 }
 
 func (b *Builder) createEnvironment() error {
-	log.Println("creating environment", b.imageName())
+	log.Println("creating environment", b.canonicalImageName())
 	createResp, err := b.cli.ContainerCreate(
 		b.ctx,
 		&container.Config{
-			Image:        b.imageName(),
+			Image:        b.canonicalImageName(),
 			AttachStdout: true,
 			AttachStderr: true,
 		},

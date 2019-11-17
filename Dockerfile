@@ -6,6 +6,8 @@ RUN mkdir -p '/mnt/src' && \
     mkdir -p '/mnt/output' && \
     mkdir -p '/mnt/pkgs' && \
     mkdir -p /build/src && \
+    groupadd -g 1000 builduser && \
+    useradd -r -u 1000 -g builduser -d /home/builduser builduser && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get -y install build-essential devscripts wget && \
