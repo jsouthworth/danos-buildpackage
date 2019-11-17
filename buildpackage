@@ -1,0 +1,44 @@
+#!/bin/bash
+
+function create_local_debian_repo() {
+    mkdir -p /tmp/pkgs
+    cp /mnt/pkgs/*.deb /tmp/pkgs
+    pushd /tmp/pkgs
+    dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+    popd
+    echo "deb [trusted=yes] file:/tmp/pkgs /" > \
+	 /etc/apt/sources.list.d/001local.list
+    cat > /etc/apt/preferences.d/001local.pref << EOF
+Package: *
+Pin: origin ""
+Pin-Priority: 999
+EOF
+
+    apt-get update
+}
+
+function import_source() {
+    cp -r /mnt/src/* /build/src
+}
+
+function install_build_dependencies() {
+    mk-build-deps --install --tool \
+		  "apt-get -o Debug::pkgProblemResolver=yes \
+	      	       --no-install-recommends -y" \
+		  debian/control
+}
+
+function build_package() {
+    debuild -uc -us -i -b
+}
+
+function export_package() {
+    cp ../*.deb /mnt/output
+}
+
+
+create_local_debian_repo
+import_source
+install_build_dependencies
+build_package
+export_package
