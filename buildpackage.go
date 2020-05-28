@@ -213,3 +213,10 @@ func (b *Builder) Build() (err error) {
 	}
 	return nil
 }
+
+func (b *Builder) Close() error {
+	if b.cli != nil {
+		return b.cli.Close()
+	}
+	return nil
+}
