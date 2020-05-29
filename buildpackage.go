@@ -175,7 +175,18 @@ func (b *Builder) buildPackage() error {
 	}
 
 	_, err = b.cli.ContainerWait(b.ctx, b.containerID)
-	return err
+	if err != nil {
+		return err
+	}
+	data, err := b.cli.ContainerInspect(b.ctx, b.containerID)
+	if err != nil {
+		return err
+	}
+	state := data.State
+	if state.ExitCode == 0 {
+		return nil
+	}
+	return errors.New("Build failed: " + state.Error)
 }
 
 func (b *Builder) deleteEnvironment() error {
