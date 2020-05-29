@@ -37,7 +37,7 @@ function export_package() {
     cp ../*.deb /mnt/output
 }
 
-
+export DEBIAN_FRONTEND=noninteractive
 create_local_debian_repo
 import_source
 install_build_dependencies
