@@ -18,12 +18,12 @@ EOF
 }
 
 function import_source() {
-    cp -r /mnt/src/* /build/src
+    cp -a /mnt/src /build/
     chown -R builduser:builduser /build/
 }
 
 function install_build_dependencies() {
-    mk-build-deps --install --tool \
+    mk-build-deps --install --remove --tool \
 		  "apt-get -o Debug::pkgProblemResolver=yes \
 	      	       --no-install-recommends -y" \
 		  debian/control
@@ -34,6 +34,7 @@ function build_package() {
 }
 
 function export_package() {
+    chmod 666 ../*.deb
     cp ../*.deb /mnt/output
 }
 

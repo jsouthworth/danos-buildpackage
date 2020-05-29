@@ -5,9 +5,9 @@ FROM debian:stretch
 RUN mkdir -p '/mnt/src' && \
     mkdir -p '/mnt/output' && \
     mkdir -p '/mnt/pkgs' && \
-    mkdir -p /build/src && \
+    mkdir -p /build && \
     groupadd -g 1000 builduser && \
-    useradd -r -u 1000 -g builduser -d /home/builduser builduser && \
+    useradd -r -u 1000 -g builduser -d /home/builduser -m builduser && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get -y install build-essential devscripts wget && \
