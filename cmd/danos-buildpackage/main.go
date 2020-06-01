@@ -10,13 +10,14 @@ import (
 )
 
 var srcDir, destDir, pkgDir, version, imageName string
-var localImage bool
+var noClean, localImage bool
 
 func init() {
 	flag.StringVar(&srcDir, "src", ".", "source directory")
 	flag.StringVar(&destDir, "dest", "..", "destination directory")
 	flag.StringVar(&pkgDir, "pkg", "", "preferred package directory")
 	flag.StringVar(&version, "version", "latest", "version of danos to build for")
+	flag.BoolVar(&noClean, "no-clean", false, "don't delete the container when done")
 	flag.StringVar(&imageName, "image-name", "jsouthworth.net/danos-buildpackage",
 		"name of docker image")
 	flag.BoolVar(&localImage, "local", false, "is the image only on the local system")
@@ -37,6 +38,7 @@ func main() {
 		bpkg.SourceDirectory(resolvePath(srcDir)),
 		bpkg.DestinationDirectory(resolvePath(destDir)),
 		bpkg.PreferredPackageDirectory(resolvePath(pkgDir)),
+		bpkg.RemoveContainer(!noClean),
 		bpkg.ImageName(imageName),
 		bpkg.Version(version),
 	}

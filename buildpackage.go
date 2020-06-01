@@ -23,6 +23,8 @@ type Builder struct {
 	destDir         string
 	pkgDir          string
 
+	removeContainer bool
+
 	containerID string
 }
 
@@ -75,9 +77,16 @@ func PreferredPackageDirectory(pkgDir string) MakeBuilderOption {
 	}
 }
 
+func RemoveContainer(remove bool) MakeBuilderOption {
+	return func(b *Builder) {
+		b.removeContainer = remove
+	}
+}
+
 func MakeBuilder(opts ...MakeBuilderOption) (*Builder, error) {
 	b := new(Builder)
 	b.version = "latest"
+	b.removeContainer = true
 	b.dockerImageName = "jsouthworth/danos-buildpackage"
 	for _, opt := range opts {
 		opt(b)
@@ -211,6 +220,10 @@ func (b *Builder) buildPackage() error {
 
 func (b *Builder) deleteEnvironment() error {
 	if b.containerID == "" {
+		return nil
+	}
+	if !b.removeContainer {
+		log.Println("preserving environment", b.containerID)
 		return nil
 	}
 	log.Println("deleting environment", b.containerID)
