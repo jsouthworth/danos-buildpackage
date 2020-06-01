@@ -23,6 +23,7 @@ function import_source() {
 }
 
 function install_build_dependencies() {
+    apt-get -y install base-files-vyatta lintian-profile-vyatta lintian
     mk-build-deps --install --remove --tool \
 		  "apt-get -o Debug::pkgProblemResolver=yes \
 	      	       --no-install-recommends -y" \
