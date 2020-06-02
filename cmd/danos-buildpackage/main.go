@@ -18,7 +18,7 @@ func init() {
 	flag.StringVar(&pkgDir, "pkg", "", "preferred package directory")
 	flag.StringVar(&version, "version", "latest", "version of danos to build for")
 	flag.BoolVar(&noClean, "no-clean", false, "don't delete the container when done")
-	flag.StringVar(&imageName, "image-name", "jsouthworth.net/danos-buildpackage",
+	flag.StringVar(&imageName, "image-name", "jsouthworth/danos-buildpackage",
 		"name of docker image")
 	flag.BoolVar(&localImage, "local", false, "is the image only on the local system")
 }
