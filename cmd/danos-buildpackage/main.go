@@ -9,8 +9,8 @@ import (
 	bpkg "jsouthworth.net/go/danos-buildpackage"
 )
 
-var srcDir, destDir, pkgDir, version string
-var noClean bool
+var srcDir, destDir, pkgDir, version, imageName string
+var noClean, localImage bool
 
 func init() {
 	flag.StringVar(&srcDir, "src", ".", "source directory")
@@ -18,6 +18,9 @@ func init() {
 	flag.StringVar(&pkgDir, "pkg", "", "preferred package directory")
 	flag.StringVar(&version, "version", "latest", "version of danos to build for")
 	flag.BoolVar(&noClean, "no-clean", false, "don't delete the container when done")
+	flag.StringVar(&imageName, "image-name", "jsouthworth.net/danos-buildpackage",
+		"name of docker image")
+	flag.BoolVar(&localImage, "local", false, "is the image only on the local system")
 }
 
 func resolvePath(in string) string {
@@ -31,13 +34,18 @@ func resolvePath(in string) string {
 
 func main() {
 	flag.Parse()
-	b, err := bpkg.MakeBuilder(
+	opts := []bpkg.MakeBuilderOption{
 		bpkg.SourceDirectory(resolvePath(srcDir)),
 		bpkg.DestinationDirectory(resolvePath(destDir)),
 		bpkg.PreferredPackageDirectory(resolvePath(pkgDir)),
 		bpkg.RemoveContainer(!noClean),
+		bpkg.ImageName(imageName),
 		bpkg.Version(version),
-	)
+	}
+	if localImage {
+		opts = append(opts, bpkg.LocalImage())
+	}
+	b, err := bpkg.MakeBuilder(opts...)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		flag.Usage()

@@ -14,12 +14,14 @@ import (
 )
 
 type Builder struct {
-	cli     *client.Client
-	ctx     context.Context
-	version string
-	srcDir  string
-	destDir string
-	pkgDir  string
+	cli             *client.Client
+	ctx             context.Context
+	version         string
+	dockerImageName string
+	localImage      bool
+	srcDir          string
+	destDir         string
+	pkgDir          string
 
 	removeContainer bool
 
@@ -43,6 +45,17 @@ func WithContext(ctx context.Context) MakeBuilderOption {
 func Version(version string) MakeBuilderOption {
 	return func(b *Builder) {
 		b.version = version
+	}
+}
+func ImageName(name string) MakeBuilderOption {
+	return func(b *Builder) {
+		b.dockerImageName = name
+	}
+}
+
+func LocalImage() MakeBuilderOption {
+	return func(b *Builder) {
+		b.localImage = true
 	}
 }
 
@@ -74,6 +87,7 @@ func MakeBuilder(opts ...MakeBuilderOption) (*Builder, error) {
 	b := new(Builder)
 	b.version = "latest"
 	b.removeContainer = true
+	b.dockerImageName = "jsouthworth/danos-buildpackage"
 	for _, opt := range opts {
 		opt(b)
 	}
@@ -105,14 +119,20 @@ func (b *Builder) srcDirIsDebian() bool {
 }
 
 func (b *Builder) canonicalImageName() string {
+	if b.localImage {
+		return b.imageName()
+	}
 	return "registry.hub.docker.com/" + b.imageName()
 }
 
 func (b *Builder) imageName() string {
-	return "jsouthworth/danos-buildpackage:" + b.version
+	return b.dockerImageName + ":" + b.version
 }
 
 func (b *Builder) pullEnvironment() error {
+	if b.localImage {
+		return nil
+	}
 	log.Println("pulling environment", b.canonicalImageName())
 	r, err := b.cli.ImagePull(
 		b.ctx,
