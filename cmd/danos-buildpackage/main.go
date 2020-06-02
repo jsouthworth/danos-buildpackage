@@ -9,13 +9,17 @@ import (
 	bpkg "jsouthworth.net/go/danos-buildpackage"
 )
 
-var srcDir, destDir, pkgDir, version string
+var srcDir, destDir, pkgDir, version, imageName string
+var localImage bool
 
 func init() {
 	flag.StringVar(&srcDir, "src", ".", "source directory")
 	flag.StringVar(&destDir, "dest", "..", "destination directory")
 	flag.StringVar(&pkgDir, "pkg", "", "preferred package directory")
 	flag.StringVar(&version, "version", "latest", "version of danos to build for")
+	flag.StringVar(&imageName, "image-name", "jsouthworth.net/danos-buildpackage",
+		"name of docker image")
+	flag.BoolVar(&localImage, "local", false, "is the image only on the local system")
 }
 
 func resolvePath(in string) string {
@@ -29,12 +33,17 @@ func resolvePath(in string) string {
 
 func main() {
 	flag.Parse()
-	b, err := bpkg.MakeBuilder(
+	opts := []bpkg.MakeBuilderOption{
 		bpkg.SourceDirectory(resolvePath(srcDir)),
 		bpkg.DestinationDirectory(resolvePath(destDir)),
 		bpkg.PreferredPackageDirectory(resolvePath(pkgDir)),
+		bpkg.ImageName(imageName),
 		bpkg.Version(version),
-	)
+	}
+	if localImage {
+		opts = append(opts, bpkg.LocalImage())
+	}
+	b, err := bpkg.MakeBuilder(opts...)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		flag.Usage()
