@@ -8,6 +8,7 @@ RUN mkdir -p '/mnt/src' && \
     mkdir -p /build && \
     groupadd -g 1000 builduser && \
     useradd -r -u 1000 -g builduser -d /home/builduser -m builduser && \
+    sed 's/main$/main contrib/' /etc/apt/sources.list && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get -y install build-essential devscripts wget && \

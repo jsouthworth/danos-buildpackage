@@ -41,7 +41,7 @@ function export_package() {
 
 export DEBIAN_FRONTEND=noninteractive
 create_local_debian_repo
-import_source
-install_build_dependencies
-build_package
+import_source || exit 1
+install_build_dependencies || exit 1
+build_package || exit 1
 export_package
