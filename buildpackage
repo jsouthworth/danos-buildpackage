@@ -14,6 +14,10 @@ Pin: origin ""
 Pin-Priority: 999
 EOF
 
+}
+
+function setup_apt() {
+    create_local_debian_repo
     apt-get update
 }
 
@@ -23,7 +27,7 @@ function import_source() {
 }
 
 function install_build_dependencies() {
-    apt-get -y install base-files-vyatta lintian-profile-vyatta lintian
+    apt-get -y install build-essential lintian base-files-vyatta lintian-profile-vyatta
     mk-build-deps --install --remove --tool \
 		  "apt-get -o Debug::pkgProblemResolver=yes \
 	      	       --no-install-recommends -y" \
@@ -40,7 +44,7 @@ function export_package() {
 }
 
 export DEBIAN_FRONTEND=noninteractive
-create_local_debian_repo
+setup_apt
 import_source || exit 1
 install_build_dependencies || exit 1
 build_package || exit 1
