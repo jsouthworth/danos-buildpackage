@@ -13,6 +13,7 @@ RUN mkdir -p '/mnt/src' && \
 	/etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get upgrade -y && \
+    apt-get -y install devscripts && \
     apt-get -y -t buster-backports install devscripts
 
 COPY buildpackage /usr/local/bin
