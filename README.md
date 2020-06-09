@@ -21,6 +21,12 @@ $ danos-buildpackage -h
 Usage of danos-buildpackage:
   -dest string
     	destination directory (default "..")
+  -image-name string
+    	name of docker image (default "jsouthworth/danos-buildpackage")
+  -local
+    	is the image only on the local system
+  -no-clean
+    	don't delete the container when done
   -pkg string
     	preferred package directory
   -src string
