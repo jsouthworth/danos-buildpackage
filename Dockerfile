@@ -1,5 +1,5 @@
-# docker build -t danos-1908-build -f Dockerfile .
-# docker run --rm -v $PWD:/mnt/src -v $PWD:/mnt/output  danos-1908-build
+# docker build -t danos-2005-build -f Dockerfile .
+# docker run --rm -v $PWD:/mnt/src -v $PWD:/mnt/output  danos-2005-build
 FROM debian:buster-slim
 
 RUN mkdir -p '/mnt/src' && \
@@ -13,8 +13,11 @@ RUN mkdir -p '/mnt/src' && \
 	/etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get -y install devscripts && \
-    apt-get -y -t buster-backports install devscripts
+    apt-get -y install devscripts wget && \
+    apt-get -y -t buster-backports install devscripts && \
+    echo "deb http://repos.danosproject.org.s3-website-us-west-1.amazonaws.com/repo/ 2005 main" > /etc/apt/sources.list.d/danos.list && \
+    wget -q -O- https://s3-us-west-1.amazonaws.com/repos.danosproject.org/Release.key | apt-key add - && \
+    apt-get update
 
 COPY buildpackage /usr/local/bin
 
