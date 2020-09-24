@@ -11,7 +11,7 @@ From source:
 ```
 $ git clone https://github.com/jsouthworth/danos-buildpackage
 $ cd danos-buildpackage
-$ go install jsouthworth.net/go/danos-buildimage/cmd/danos-buildpackage
+$ go install jsouthworth.net/go/danos-buildpackage/cmd/danos-buildpackage
 ```
 
 ## Usage
