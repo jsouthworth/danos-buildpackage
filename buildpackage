@@ -13,11 +13,21 @@ Package: *
 Pin: origin ""
 Pin-Priority: 999
 EOF
+    
+}
 
+function pin_danos_repos() {
+    cat > /etc/apt/preferences.d/998danos << EOF
+Package: *
+Pin: release o=DANOS
+Pin-Priority: 998
+EOF
+    
 }
 
 function setup_apt() {
     create_local_debian_repo
+    pin_danos_repos
     apt-get update
 }
 
