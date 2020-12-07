@@ -1,6 +1,6 @@
 # docker build -t danos-1908-build -f Dockerfile .
 # docker run --rm -v $PWD:/mnt/src -v $PWD:/mnt/output  danos-1908-build
-FROM debian:buster-slim
+FROM debian:buster
 
 RUN mkdir -p '/mnt/src' && \
     mkdir -p '/mnt/output' && \
