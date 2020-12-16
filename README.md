@@ -16,11 +16,11 @@ $ go install jsouthworth.net/go/danos-buildpackage/cmd/danos-buildpackage
 ## Usage
 
  - Clone the desired repository.
- - "cd <the-cloned-source-tree>"
+ - "cd [the-cloned-source-tree]"
  - Checkout the correct tag for the desired release
-   - "git checkout danos/<version>"
+   - "git checkout danos/[version]"
  - Run:
-   - "danos-buildpackage -version <version>"
+   - "danos-buildpackage -version [version]"
 
 The debian files from completed build will be in the parent directory.
 
