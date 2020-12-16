@@ -32,7 +32,7 @@ function setup_apt() {
 }
 
 function import_source() {
-    cp -a /mnt/src /build/
+    cp -a /mnt/src /build/src
     chown -R builduser:builduser /build/
 }
 
@@ -45,7 +45,21 @@ function install_build_dependencies() {
 }
 
 function build_package() {
-    su builduser -c "debuild -uc -us -i -b"
+    local gbp_args="--git-verbose \
+	--git-ignore-branch \
+	--git-ignore-new \
+	--git-export-dir=.."
+    local dpkg_args="-us -uc -i -b"
+
+    if git rev-parse --verify --quiet origin/pristine-tar>/dev/null ; then
+	git branch pristine-tar origin/pristine-tar
+    else
+	gbp_args="$gbp_args --git-no-pristine-tar"
+    fi
+
+    local cmd="gbp buildpackage $gbp_args $dpkg_args"
+    echo "$cmd"
+    su builduser -c "$cmd"
 }
 
 function export_package() {
@@ -56,6 +70,9 @@ function export_package() {
 export DEBIAN_FRONTEND=noninteractive
 setup_apt
 import_source || exit 1
+
+pushd /build/src
 install_build_dependencies || exit 1
 build_package || exit 1
 export_package
+popd
