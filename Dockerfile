@@ -13,11 +13,12 @@ RUN mkdir -p '/mnt/src' && \
 	/etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get -y install devscripts && \
+    apt-get -y install devscripts git-buildpackage \
+        pristine-tar bzip2 xz-utils wget && \
     apt-get -y -t buster-backports install devscripts
 
 COPY buildpackage /usr/local/bin
 
-WORKDIR /build/src
+WORKDIR /build
 
 ENTRYPOINT /usr/local/bin/buildpackage
