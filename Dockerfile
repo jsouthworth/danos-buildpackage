@@ -1,5 +1,5 @@
-# docker build -t danos-2012-build -f Dockerfile .
-# docker run --rm -v $PWD:/mnt/src -v $PWD:/mnt/output  danos-2012-build
+# docker build -t danos-2015-build -f Dockerfile .
+# docker run --rm -v $PWD:/mnt/src -v $PWD:/mnt/output  danos-2015-build
 FROM debian:buster
 
 RUN mkdir -p '/mnt/src' && \
@@ -16,7 +16,7 @@ RUN mkdir -p '/mnt/src' && \
     apt-get -y install build-essential devscripts wget \
         git-buildpackage pristine-tar bzip2 xz-utils && \
     apt-get -y -t buster-backports install devscripts && \
-    echo "deb http://s3-us-west-1.amazonaws.com/2012.repos.danosproject.org/repo/ 2012 main" > /etc/apt/sources.list.d/danos.list && \
+    echo "deb http://s3-us-west-1.amazonaws.com/2105.repos.danosproject.org/repo/ 2105 main" > /etc/apt/sources.list.d/danos.list && \
     wget -q -O- https://s3-us-west-1.amazonaws.com/repos.danosproject.org/Release.key | apt-key add - && \
     apt-get update
 
